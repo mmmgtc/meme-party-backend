@@ -21,6 +21,16 @@ Prepare the Database
 ```bash
 python manage.py migrate
 ```
+The Web Service Needs a secret key for Django and an [Infura](https://infura.io/) ETH API Key to handle login with Web3.
+
+You can get a free Infura ETH API key from [here](https://infura.io/product/ethereum).
+
+Create a `.env` file in the project root and add your keys like shown below:
+
+```
+SECRET_KEY = 'XXXXXX'
+WEB3_KEY = 'YYYYYY'
+```
 
 Run The Dev Server
 
