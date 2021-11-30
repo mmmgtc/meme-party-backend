@@ -11,7 +11,7 @@ certifi==2019.11.28
 chardet==3.0.4
 charset-normalizer==2.0.7
 Click==7.0
-cloud-init==21.1
+cloud-init
 colorama==0.4.3
 command-not-found==0.3
 configobj==5.0.6
