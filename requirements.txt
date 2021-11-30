@@ -7,3 +7,4 @@ django-filter
 python-decouple
 django-cors-headers
 dj-database-url
+psycopg2
