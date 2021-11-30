@@ -24,7 +24,7 @@ SECRET_KEY = config('SECRET_KEY')
 WEB3_KEY = config('WEB3_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '*',
