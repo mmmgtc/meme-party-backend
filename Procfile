@@ -1,1 +1,1 @@
-web: gunicorn museum.wsgi
+web: gunicorn meme_museum.wsgi
