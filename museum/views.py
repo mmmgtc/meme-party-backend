@@ -185,6 +185,6 @@ class Search(generics.ListAPIView):
     def get_queryset(self):
         queryset = Meme.objects.all()
         query = self.request.query_params.get('query')
-        if username is not None:
+        if query is not None:
             queryset = queryset.filter(title__search=query)
         return queryset
