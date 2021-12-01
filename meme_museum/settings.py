@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'museum',
     'rest_framework.authtoken',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
