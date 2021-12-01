@@ -145,7 +145,7 @@ class MemeList(generics.ListCreateAPIView):
 
     def list(self, request):
         # change queryset here as per discussion
-        queryset = Meme.objects.all().order_by('-id')[:10]
+        queryset = Meme.objects.all().order_by('-id')
         serializer = MemeSerializer(queryset, many=True)
         return Response(serializer.data)
 
