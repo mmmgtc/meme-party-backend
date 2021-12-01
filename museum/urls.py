@@ -11,6 +11,7 @@ urlpatterns = [
     path('signup/', views.CustomAuthToken.as_view()),
     path('upvote/', views.UpvoteView.as_view()),
     path('downvote/', views.DownvoteView.as_view()),
+    path('search/', views.Search.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

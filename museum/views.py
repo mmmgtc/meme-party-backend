@@ -176,3 +176,15 @@ class TagMemeList(APIView):
         queryset = tag.meme_set.all().order_by('-id')
         serializer = MemeSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class Search(generics.ListAPIView):
+    authentication_classes = []
+    serializer_class = MemeSerializer
+
+    def get_queryset(self):
+        queryset = Meme.objects.all()
+        query = self.request.query_params.get('query')
+        if username is not None:
+            queryset = queryset.filter(body_text__search=query)
+        return queryset
