@@ -10,11 +10,15 @@ class UserProfile(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
+
     # hack removing unique and testing just on the serializer
     # this is because drf doesn't handle nested serializers
     # and ensures unique during validation
     # since memes are the only way to create tags the meme serializer
     # now handles this
+
+    def __str__(self):
+        return f'Tag: {self.name}'
 
 
 class Meme(models.Model):
@@ -30,3 +34,6 @@ class Meme(models.Model):
     poaster = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     meme_lord = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f'Meme: {self.title}'
