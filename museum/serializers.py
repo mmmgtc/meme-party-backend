@@ -36,15 +36,34 @@ class TagSerializer(serializers.ModelSerializer):
 class MemeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     poaster = UserSerializer(read_only=True)
+    meme_score = serializers.SerializerMethodField('get_meme_score')
+
+    def meme_score(self, meme):
+        return meme.upvotes - meme.downvotes
 
     class Meta:
         model = Meme
         fields = [
-            'id', 'title', 'image', 'upvotes', 'downvotes', 'description',
-            'source', 'meme_lord', 'tags', 'poaster', 'created_at'
+            'id',
+            'title',
+            'image',
+            'upvotes',
+            'downvotes',
+            'description',
+            'source',
+            'meme_lord',
+            'tags',
+            'poaster',
+            'created_at',
+            'meme_score',
         ]
         read_only_fields = [
-            'id', 'upvotes', 'downvotes', 'created_at', 'poaster'
+            'id',
+            'upvotes',
+            'downvotes',
+            'created_at',
+            'poaster',
+            'meme_score',
         ]
 
     def create(self, validated_data):
