@@ -38,7 +38,7 @@ class MemeSerializer(serializers.ModelSerializer):
     poaster = UserSerializer(read_only=True)
     meme_score = serializers.SerializerMethodField('get_meme_score')
 
-    def meme_score(self, meme):
+    def get_meme_score(self, meme):
         return meme.upvotes - meme.downvotes
 
     class Meta:
