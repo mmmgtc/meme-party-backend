@@ -16,6 +16,10 @@ from .serializers import (LoginRequestSerializer, MemeSerializer,
                           TagSerializer, UserProfileSerializer, UserSerializer)
 from .utils import verify_message
 
+from collections import defaultdict
+
+import datetime
+
 
 class CustomAuthToken(ObtainAuthToken):
     authentication_classes = []
@@ -189,3 +193,78 @@ class Search(generics.ListAPIView):
             queryset = queryset.filter(title__search=query) | queryset.filter(
                 description__search=query)
         return queryset
+
+
+class UserMemeList(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get_user(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, address, format=None):
+        user = self.get_user(address)
+        queryset = user.meme_set.all().order_by('-id')
+        serializer = MemeSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class LeaderBoard(APIView):
+    authentication_classes = []
+    serializer_class = UserProfileSerializer
+
+    def get_leaders(self, mins, number=10):
+        # replace with a real aggregation of group by types
+        date_from = datetime.datetime.now() - datetime.timedelta(minutes=mins)
+        memes = Meme.objects.filter(created_at__gte=date_from)
+        user_profiles = defaultdict(int)
+
+        for meme in memes:
+            user_profiles[
+                meme.poaster.userprofile] += meme.upvotes - meme.downvotes
+
+        ranked_list = []
+
+        for user, karma in sorted(user_profiles.items(),
+                                  key=lambda item: item[1],
+                                  reverse=True):
+            user.karma = karma
+            ranked_list.append(user)
+
+        return ranked_list[:number]
+
+    def get(self, request, mins, format=None):
+        queryset = self.get_leaders(mins)
+        serializer = UserProfileSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class Pagination(generics.ListAPIView):
+    authentication_classes = []
+    serializer_class = MemeSerializer
+
+    def get_queryset(self):
+        queryset = Meme.objects.all().order_by('-id')
+        n = int(self.request.query_params.get('n', 25))
+        latest = self.request.query_params.get('latest', None)
+        oldest = self.request.query_params.get('oldest', None)
+
+        if latest is None:
+            return queryset[:n]
+
+        latest, oldest = int(latest), int(oldest)
+        # excluding the boundaries
+        new_memes = queryset.filter(id__gt=latest).order_by('id')[:n]
+
+        if len(new_memes) == n:
+            return reversed(new_memes)
+
+        num_old_memes_to_fetch = n - len(new_memes)
+        old_memes = queryset.filter(
+            id__lt=oldest).order_by('-id')[:num_old_memes_to_fetch]
+        combined_memes = old_memes | new_memes
+
+        return combined_memes.order_by('-id')
